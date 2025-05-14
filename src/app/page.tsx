@@ -1,9 +1,11 @@
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <Button className=""> HI </Button>
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -26,11 +28,15 @@ export default function Home() {
         </ol>
 
         <div className="flex gap-8 flex-col">
-          <h1 className="font-extralight text-4xl">
+          <h1 className="font-extralight text-tertiary bg-primary text-4xl">
             Montserrat Extra Light (200)
           </h1>
-          <h1 className="font-light text-4xl">Montserrat Light (300)</h1>
-          <h1 className="font-normal text-4xl">Montserrat Regular (400)</h1>
+          <h1 className="font-light text-tertiary bg-accent-foreground text-4xl">
+            Montserrat Light (300)
+          </h1>
+          <h1 className="font-normal text-rose-400 text-4xl">
+            Montserrat Regular (400)
+          </h1>
           <h1 className="font-medium text-4xl">Montserrat Medium (500)</h1>
           <h1 className="font-semibold text-4xl">Montserrat Semi-Bold (600)</h1>
           <h1 className="font-bold text-4xl">Montserrat Bold (700)</h1>
