@@ -14,7 +14,7 @@ export default function Page() {
           />
         </div>
         <div className="flex justify-center items-center h-screen">
-          <SignIn />
+          <SignIn afterSignInUrl="/dashboard" />
         </div>
       </div>
     </>
