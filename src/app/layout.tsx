@@ -8,7 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import { Provider } from "./provider";
+import Provider from "./provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
