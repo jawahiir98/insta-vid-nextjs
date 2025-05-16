@@ -1,9 +1,9 @@
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
+
 function Dasboard() {
   return (
     <div>
-      <UserButton afterSignOutUrl="/" />
+      <div className="">Dashboard</div>
     </div>
   );
 }
