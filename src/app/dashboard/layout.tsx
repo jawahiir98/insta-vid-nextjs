@@ -10,7 +10,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       </div>
       <div>
         <Header />
-        <div className={'md:ml-64'}>
+        <div className={'md:ml-64 p-10'}>
             {children}
         </div>
       </div>

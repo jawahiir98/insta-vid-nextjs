@@ -6,7 +6,7 @@ import { CircleUser, PanelsTopLeft, PlusCircleIcon, ShieldPlusIcon } from 'lucid
 
 const menuOptions = [
     { id: 1, name: 'Dashboard', path: '/dashboard', icon: PanelsTopLeft },
-    { id: 2, name: 'Create New', path: '/create-new', icon: PlusCircleIcon },
+    { id: 2, name: 'Create New', path: '/dashboard/create-new', icon: PlusCircleIcon },
     { id: 3, name: 'Upgrade', path: '/upgrade', icon: ShieldPlusIcon },
     { id: 4, name: 'Account', path: '/account', icon: CircleUser },
 ]
