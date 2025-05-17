@@ -20,6 +20,7 @@ const scriptData = 'Did you know that approximately 350 million pizzas are sold 
 function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
+    const [audioFileUrl, setAudioFileUrl] = useState<string>('');
     const [videoScript, setVideoScript] = useState([]);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
@@ -42,6 +43,7 @@ function CreateNew() {
     }
 
     const generateAudioFile=async (vidScript: any) => {
+        if(!loading) setLoading(true);
         let script = '';
         const id = uuidv4();
         // for(let i = 0;i < vidScript.length;i++){
@@ -50,7 +52,8 @@ function CreateNew() {
         await axios.post('/api/generate-audio', {
             text: scriptData,
             id: id
-        }).then(response => {console.log(response.data)})
+        }).then(response => {setAudioFileUrl(response.data.result)})
+        if(loading) setLoading(false);
     }
 
     return (
