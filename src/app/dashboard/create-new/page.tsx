@@ -16,12 +16,14 @@ interface FormData {
 }
 
 const scriptData = 'Did you know that approximately 350 million pizzas are sold in the United States each year? Sloths are surprisingly strong swimmers and can hold their breath for up to 40 minutes! A single sunflower can have up to 2,000 seeds. Cats can make over 100 different sounds, while dogs only make about 10. Hummingbirds can beat their wings up to 80 times per second. There are more trees on Earth than stars in the Milky Way galaxy. Elephants can remember and recognize the calls of their relatives decades after they were last heard. Some fish can change their sex to better adapt to the environment. Laughter is contagious, and it has proven health benefits. Did you know that there are over 7,000 languages spoken in the world today? '
+const audioFileUrlData ='https://firebasestorage.googleapis.com/v0/b/insta-vid-e0e16.firebasestorage.app/o/insta-vid%2F129b51d5-b858-497b-afd9-be61b50c92d4.mp3?alt=media&token=7796794e-1e5a-4554-b841-4dd67a7821ef'
 
 function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
     const [audioFileUrl, setAudioFileUrl] = useState<string>('');
     const [videoScript, setVideoScript] = useState([]);
+    const [captions, setCaptions] = useState([]);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
         setFormData(prev => ({ ...prev, [fieldName]: fieldValue }))
@@ -56,6 +58,14 @@ function CreateNew() {
         if(loading) setLoading(false);
     }
 
+    const generateAudioCaptions = async(fileUrl: string) => {
+        setLoading(true);
+        await axios.post('/api/generate-caption', {
+            audioFileUrl: fileUrl,
+        }).then(response => {setCaptions(response.data.result)})
+        setLoading(false);
+    }
+
     return (
         <div className="md:px-20">
             <h2 className="font-bold text-3xl text-center">Create new video</h2>
@@ -65,7 +75,7 @@ function CreateNew() {
                 <SelectDuration onUserSelect={onHandleInputChange} />
                 <Button
                     className="w-full mt-8"
-                    onClick={()=>generateAudioFile(scriptData)}
+                    onClick={()=>generateAudioCaptions(audioFileUrlData)}
                 >
                     Create Short Video
                 </Button>
