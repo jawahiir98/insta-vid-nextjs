@@ -19,7 +19,7 @@ export const SelectTopic = ({ onUserSelect }: Props) => {
             <p className={'text-gray-500 text-sm font-medium '}>Video description</p>
             <Select onValueChange={(value) => {
                 setSelectOption(value)
-                if (selectOption === 'Custom Prompt') {
+                if (selectOption !== 'Custom Prompt') {
                     onUserSelect('topic', value);
                 }
             }}>
