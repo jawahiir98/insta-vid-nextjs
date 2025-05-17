@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { SelectTopic } from "@/app/dashboard/create-new/_components/SelectTopic"
 import { SelectStyle } from "@/app/dashboard/create-new/_components/SelectStyle"
 import { SelectDuration } from "@/app/dashboard/create-new/_components/SelectDuration"
+import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoading"
 import { useState } from "react"
 import axios from "axios"
 
@@ -15,6 +16,8 @@ interface FormData {
 
 function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
+    const [loading, setLoading] = useState(false);
+    const [videoScript, setVideoScript] = useState(null);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
         setFormData(prev => ({ ...prev, [fieldName]: fieldValue }))
@@ -25,9 +28,11 @@ function CreateNew() {
     }
 
     const getVideoScript = async () => {
+        setLoading(true);
         await axios.post('/api/get-video-script', {
             prompt: generatePrompt(formData)
-        }).then(response => {console.log(response.data)})
+        }).then(response => {setVideoScript(response.data.result)})
+        setLoading(false)
     }
 
     return (
@@ -44,6 +49,7 @@ function CreateNew() {
                     Create Short Video
                 </Button>
             </div>
+            <CustomLoading loading={loading}/>
         </div>
     )
 }
