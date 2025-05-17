@@ -1,27 +1,43 @@
-import {NextResponse} from "next/server";
-import fs from 'fs'
-import util from 'util'
-import textToSpeech from '@google-cloud/text-to-speech';
+import { storage } from "@/configs/FirebaseConfig";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { NextResponse } from "next/server";
 
-// Creates a client
-const client = new textToSpeech.TextToSpeechClient({apiKey: process.env.GOOGLE_API_KEY});
+// const textToSpeech = require('@google-cloud/text-to-speech');
+import { TextToSpeechClient } from "@google-cloud/text-to-speech";
+const client = new TextToSpeechClient({
+    apiKey: process.env.GOOGLE_API_KEY
+});
 
 export async function POST(req: Request) {
-    const {text, id} = await req.json();
-    const request = {
-        input: { text: text },
-        // Select the language and SSML voice gender (optional)
-        voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
-        // select the type of audio encoding
-        audioConfig: { audioEncoding: 'MP3' }
-    };
+    try {
+        const { text, id } = await req.json();
 
-    // Performs the text-to-speech request
-    const [response] = await client.synthesizeSpeech(request);
-    // Write the binary audio content to a local file
-    const writeFile = util.promisify(fs.writeFile);
-    await writeFile('output.mp3', response.audioContent, 'binary');
-    console.log('Audio content written to file: output.mp3');
+        // Create the reference where your data is store
+        const storageRef = ref(storage, 'insta-vid/' + id + '.mp3');
 
-    return NextResponse.json({Result: 'success'})
+        const request = {
+            input: { text: text },
+            // Select the language and SSML voice gender (optional)
+            voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
+            // select the type of audio encoding
+            audioConfig: { audioEncoding: 'MP3' }
+        };
+
+        // Performs the text-to-speech request
+        const [response] = await client.synthesizeSpeech(request);
+
+        // Create the buffer format for audio
+        const audioBuffer = Buffer.from(response.audioContent, 'binary');
+
+        // Upload the data where you initialize the reference, in the format of buffer
+        await uploadBytes(storageRef, audioBuffer, { contentType: 'audio/mp3' });
+
+        // Get the download URL of the uploaded file
+        const downloadUrl = await getDownloadURL(storageRef);
+
+        return NextResponse.json({ Request: downloadUrl });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        return NextResponse.json({ error: 'Error processing request.' }, { status: 500});
+    }
 }
