@@ -5,6 +5,7 @@ import { SelectTopic } from "@/app/dashboard/create-new/_components/SelectTopic"
 import { SelectStyle } from "@/app/dashboard/create-new/_components/SelectStyle"
 import { SelectDuration } from "@/app/dashboard/create-new/_components/SelectDuration"
 import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoading"
+import { v4 as uuidv4 } from 'uuid';
 import { useState } from "react"
 import axios from "axios"
 
@@ -14,10 +15,12 @@ interface FormData {
     duration?: string
 }
 
+const scriptData = 'Did you know that approximately 350 million pizzas are sold in the United States each year? Sloths are surprisingly strong swimmers and can hold their breath for up to 40 minutes! A single sunflower can have up to 2,000 seeds. Cats can make over 100 different sounds, while dogs only make about 10. Hummingbirds can beat their wings up to 80 times per second. There are more trees on Earth than stars in the Milky Way galaxy. Elephants can remember and recognize the calls of their relatives decades after they were last heard. Some fish can change their sex to better adapt to the environment. Laughter is contagious, and it has proven health benefits. Did you know that there are over 7,000 languages spoken in the world today? '
+
 function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
-    const [videoScript, setVideoScript] = useState(null);
+    const [videoScript, setVideoScript] = useState([]);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
         setFormData(prev => ({ ...prev, [fieldName]: fieldValue }))
@@ -31,8 +34,23 @@ function CreateNew() {
         setLoading(true);
         await axios.post('/api/get-video-script', {
             prompt: generatePrompt(formData)
-        }).then(response => {setVideoScript(response.data.result)})
+        }).then(response => {
+            setVideoScript(response.data.result)
+            generateAudioFile(response.data.result);
+        })
         setLoading(false)
+    }
+
+    const generateAudioFile=async (vidScript: any) => {
+        let script = '';
+        const id = uuidv4();
+        // for(let i = 0;i < vidScript.length;i++){
+        //     script += vidScript[i].contentText+' ';
+        // }
+        await axios.post('/api/generate-audio', {
+            text: scriptData,
+            id: id
+        }).then(response => {console.log(response.data)})
     }
 
     return (
@@ -44,7 +62,7 @@ function CreateNew() {
                 <SelectDuration onUserSelect={onHandleInputChange} />
                 <Button
                     className="w-full mt-8"
-                    onClick={getVideoScript}
+                    onClick={()=>generateAudioFile(scriptData)}
                 >
                     Create Short Video
                 </Button>
