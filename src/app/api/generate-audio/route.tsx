@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         const { text, id } = await req.json();
 
         // Create the reference where your data is store
-        const storageRef = ref(storage, 'insta-vid/' + id + '.mp3');
+        const storageRef = ref(storage, 'insta-vid/audio/' + id + '.mp3');
 
         const request = {
             input: { text: text },
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         // Get the download URL of the uploaded file
         const downloadUrl = await getDownloadURL(storageRef);
 
-        return NextResponse.json({ Request: downloadUrl });
+        return NextResponse.json({ result: downloadUrl });
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json({ error: 'Error processing request.' }, { status: 500});
