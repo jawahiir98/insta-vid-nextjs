@@ -3,12 +3,15 @@
 import {useContext, useEffect, useState} from "react"
 import axios from "axios"
 import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button'
 import { SelectTopic } from "@/app/dashboard/create-new/_components/SelectTopic"
 import { SelectStyle } from "@/app/dashboard/create-new/_components/SelectStyle"
 import { SelectDuration } from "@/app/dashboard/create-new/_components/SelectDuration"
 import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoading"
 import {VideoDataContext} from "@/app/_context/videoDataContext";
+import { db } from "@/db/drizzle";
+import { VideoData } from "@/db/schema";
 
 interface FormData {
     topic?: string
@@ -28,7 +31,7 @@ function CreateNew() {
     const [videoScript, setVideoScript] = useState<Script[]>();
     const [captions, setCaptions] = useState([]);
     const [images, setImages] = useState<string[]>([]);
-
+    const {user} = useUser();
     const { videoData, setVideoData } = useContext(VideoDataContext);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
@@ -129,7 +132,23 @@ function CreateNew() {
 
     useEffect(() => {
         console.log(videoData);
+        if(videoData && Object.keys(videoData).length === 4){
+             saveVideoData(videoData);
+        }
     }, [videoData]);
+
+    const saveVideoData = async (videoData) => {
+        setLoading(true);
+        const result = await db.insert(VideoData).values({
+            videoScript: videoData?.videoScript,
+            audioFileUrl: videoData?.audioFileUrl,
+            captions: videoData?.captions,
+            imageList: videoData?.imageList,
+            createdBy: user?.primaryEmailAddress?.emailAddress
+        }).returning({id: VideoData?.id})
+        console.log(result);
+        setLoading(false);
+    }
 
     return (
         <div className="md:px-20">
