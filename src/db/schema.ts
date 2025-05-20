@@ -4,6 +4,8 @@ import {
   varchar,
   timestamp,
   boolean,
+  serial,
+  json
 } from "drizzle-orm/pg-core";
 
 export const Users = pgTable("users", {
@@ -13,4 +15,13 @@ export const Users = pgTable("users", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   subscription: boolean("subscription").default(false),
   imageUrl: varchar("imageUrl"),
+});
+
+export const VideoData = pgTable('videoData', {
+  id: serial('id').primaryKey(),
+  videoScript: json('script').notNull(),
+  audioFileUrl: varchar('audioFileUrl').notNull(),
+  captions: json('captions').notNull(),
+  imageList: varchar('imageList').array(),
+  createdBy: varchar('createdBy').notNull()
 });
