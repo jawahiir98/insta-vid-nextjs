@@ -12,6 +12,7 @@ import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoad
 import {VideoDataContext} from "@/app/_context/videoDataContext";
 import { db } from "@/db/drizzle";
 import { VideoData } from "@/db/schema";
+import {PlayerDialog} from "@/app/dashboard/_components/PlayerDialog";
 
 interface FormData {
     topic?: string
@@ -31,6 +32,8 @@ function CreateNew() {
     const [videoScript, setVideoScript] = useState<Script[]>();
     const [captions, setCaptions] = useState([]);
     const [images, setImages] = useState<string[]>([]);
+    const [playVideo, setPlayVideo] = useState(true);
+    const [videoId, setVideoId] = useState(2);
     const {user} = useUser();
     const { videoData, setVideoData } = useContext(VideoDataContext);
 
@@ -146,6 +149,8 @@ function CreateNew() {
             imageList: videoData?.imageList,
             createdBy: user?.primaryEmailAddress?.emailAddress
         }).returning({id: VideoData?.id})
+        setVideoId(result[0].id);
+        setPlayVideo(true);
         console.log(result);
         setLoading(false);
     }
@@ -165,6 +170,7 @@ function CreateNew() {
                 </Button>
             </div>
             <CustomLoading loading={loading}/>
+            <PlayerDialog playVideo={playVideo} videoId={videoId} />
         </div>
     )
 }
