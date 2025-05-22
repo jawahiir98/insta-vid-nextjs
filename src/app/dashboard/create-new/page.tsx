@@ -32,9 +32,9 @@ function CreateNew() {
     const [videoScript, setVideoScript] = useState<Script[]>();
     const [captions, setCaptions] = useState([]);
     const [images, setImages] = useState<string[]>([]);
-    const [playVideo, setPlayVideo] = useState(true);
+    const [playVideo, setPlayVideo] = useState(false);
     const [videoId, setVideoId] = useState(2);
-    const {user} = useUser();
+    const router = useRouter();
     const { videoData, setVideoData } = useContext(VideoDataContext);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {

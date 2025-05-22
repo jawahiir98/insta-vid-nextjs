@@ -18,24 +18,23 @@ import { useRouter } from 'next/navigation';
 
 
 export const PlayerDialog = ({ playVideo, videoId }) => {
-    const [openDialog, setOpenDialog] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
     const [videoData, setVideoData] = useState<any>();
     const [durationInFrame, setDurationInFrame] = useState(100);
 
     const router = useRouter();
 
     useEffect(() => {
-        videoId && GetVideoData();
+        if(videoId && videoId > 0) GetVideoData();
     }, [playVideo]);
     useEffect(()=> {
         if(videoData){
-            setOpenDialog(playVideo);
+            setOpenDialog(!openDialog);
         }
     },[videoData])
 
     const GetVideoData = async () => {
         const result = await db.select().from(VideoData).where(eq(VideoData.id, videoId));
-        console.log(result);
         setVideoData(result[0]);
     };
 
