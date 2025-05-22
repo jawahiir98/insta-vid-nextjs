@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'export',
   env: {
-    DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_DATABASE_URL: process.env.DATABASE_URL,
   },
 };
 
