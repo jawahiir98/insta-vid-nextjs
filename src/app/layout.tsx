@@ -2,13 +2,9 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
 } from "@clerk/nextjs";
 import Provider from "./provider";
+import {Toaster} from '@/components/ui/sonner'
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -32,6 +28,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${montserrat.className} antialiased`}>
           <Provider>{children}</Provider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

@@ -10,9 +10,13 @@ import { SelectStyle } from "@/app/dashboard/create-new/_components/SelectStyle"
 import { SelectDuration } from "@/app/dashboard/create-new/_components/SelectDuration"
 import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoading"
 import {VideoDataContext} from "@/app/_context/videoDataContext";
+import {UserDetailContext} from "@/app/_context/UserDetailContext";
 import { db } from "@/db/drizzle";
-import { VideoData } from "@/db/schema";
+import {eq} from 'drizzle-orm'
+import {Users, VideoData} from "@/db/schema";
 import {PlayerDialog} from "@/app/dashboard/_components/PlayerDialog";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
 
 interface FormData {
     topic?: string
@@ -33,9 +37,13 @@ function CreateNew() {
     const [captions, setCaptions] = useState([]);
     const [images, setImages] = useState<string[]>([]);
     const [playVideo, setPlayVideo] = useState(false);
-    const [videoId, setVideoId] = useState(2);
+    const [videoId, setVideoId] = useState();
+    const {user} = useUser();
     const router = useRouter();
+    const {userDetail, setUserDetail} = useContext(UserDetailContext)
     const { videoData, setVideoData } = useContext(VideoDataContext);
+
+
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
         setFormData(prev => ({ ...prev, [fieldName]: fieldValue }))
@@ -49,7 +57,27 @@ function CreateNew() {
     }
 
     const onGenerateVideoCreation = async () => {
-        await getVideoScript();
+        console.log(userDetail);
+        if(userDetail?.credits >= 10){
+            await getVideoScript();
+        }else{
+            toast("You don't have enough credits to create a video.")
+        }
+
+    }
+
+    /*
+    * Update user credit after creating a video
+    */
+    const udpateUserCredits = async () => {
+        const result = await db.update(Users).set({
+            credits: userDetail?.credits - 10
+        }).where(eq(Users?.email, user?.primaryEmailAddress?.emailAddress))
+        setUserDetail(prev => ({
+            ...prev,
+            "credits": userDetail?.credits - 10
+        }));
+        setVideoData(null);
     }
 
     /*
@@ -151,7 +179,7 @@ function CreateNew() {
         }).returning({id: VideoData?.id})
         setVideoId(result[0].id);
         setPlayVideo(true);
-        console.log(result);
+        await udpateUserCredits();
         setLoading(false);
     }
 
