@@ -13,6 +13,7 @@
     "@google-cloud/text-to-speech": "^6.1.0",
     "@google/generative-ai": "^0.24.1",
     "@neondatabase/serverless": "^1.0.0",
+    "@netlify/plugin-nextjs": "^5.11.2",
     "@radix-ui/react-alert-dialog": "^1.1.13",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-select": "^2.2.4",
