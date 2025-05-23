@@ -20,7 +20,7 @@ function Provider({ children }: { children: React.ReactNode }) {
       await db.insert(Users).values({
         name: user?.fullName,
         email: user?.primaryEmailAddress?.emailAddress,
-        image: user?.imageUrl,
+        imageUrl: user?.imageUrl,
       });
     }
   };
