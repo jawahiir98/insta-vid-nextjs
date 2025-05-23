@@ -7,7 +7,7 @@ export const VideoList = ({videoList}) => {
     const [openPlayerDialog, setOpenPlayerDialog] = useState(false);
     const [videoId, setVideoId] = useState();
     return (
-        <div className='mt-10  grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10'>
+        <div className='mt-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10'>
             {videoList.map((video, index) => (
                 <div
                     key={video.id}
