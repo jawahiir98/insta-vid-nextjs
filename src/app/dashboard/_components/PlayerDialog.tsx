@@ -15,9 +15,12 @@ import { VideoData } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { useRouter } from 'next/navigation';
 
+interface Props {
+    playVideo: boolean;
+    videoId: number;
+}
 
-
-export const PlayerDialog = ({ playVideo, videoId }) => {
+export const PlayerDialog = ({ playVideo, videoId }: Props) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [videoData, setVideoData] = useState<any>();
     const [durationInFrame, setDurationInFrame] = useState(100);
@@ -53,7 +56,7 @@ export const PlayerDialog = ({ playVideo, videoId }) => {
                             controls={true}
                             inputProps={{
                                 ...videoData,
-                                setDurationInFrame: (frameValue) => setDurationInFrame(frameValue)
+                                setDurationInFrame: (frameValue: any) => setDurationInFrame(frameValue)
                             }}
                         />
 

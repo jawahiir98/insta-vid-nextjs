@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 function Provider({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   useEffect(() => {
-    user && isNewUser();
+    if(user) isNewUser();
   }, [user]);
   const isNewUser = async () => {
     const result = await db

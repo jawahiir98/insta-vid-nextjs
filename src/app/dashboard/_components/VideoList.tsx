@@ -7,12 +7,12 @@ export const VideoList = ({videoList}) => {
     const [openPlayerDialog, setOpenPlayerDialog] = useState(false);
     const [videoId, setVideoId] = useState();
     return (
-        <div className='mt-10 sm:flex sm:flex-col sm:justify-center sm:items-center grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10'>
+        <div className='mt-10  grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10'>
             {videoList.map((video, index) => (
                 <div
                     key={video.id}
                     onClick={() => {
-                        setOpenPlayerDialog(Date.now());
+                        setOpenPlayerDialog(!!Date.now());
                         setVideoId(video?.id);
                     }}
                     className='cursor-pointer hover:scale-105 transition-all'
@@ -33,9 +33,7 @@ export const VideoList = ({videoList}) => {
                     />
                 </div>
             ))}
-
             <PlayerDialog playVideo={openPlayerDialog} videoId={videoId} />
-
         </div>
     );
 }
