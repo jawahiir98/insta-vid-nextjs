@@ -15,6 +15,7 @@ export const Users = pgTable("users", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   subscription: boolean("subscription").default(false),
   imageUrl: varchar("imageUrl"),
+  credits: integer("credits").default(30),
 });
 
 export const VideoData = pgTable('videoData', {

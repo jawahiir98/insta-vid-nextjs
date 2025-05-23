@@ -15,27 +15,29 @@ import { VideoData } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { useRouter } from 'next/navigation';
 
+interface Props {
+    playVideo: boolean;
+    videoId: number;
+}
 
-
-export const PlayerDialog = ({ playVideo, videoId }) => {
-    const [openDialog, setOpenDialog] = useState(true);
+export const PlayerDialog = ({ playVideo, videoId }: Props) => {
+    const [openDialog, setOpenDialog] = useState(false);
     const [videoData, setVideoData] = useState<any>();
     const [durationInFrame, setDurationInFrame] = useState(100);
 
     const router = useRouter();
 
     useEffect(() => {
-        videoId && GetVideoData();
+        if(videoId && videoId > 0) GetVideoData();
     }, [playVideo]);
     useEffect(()=> {
         if(videoData){
-            setOpenDialog(playVideo);
+            setOpenDialog(!openDialog);
         }
     },[videoData])
 
     const GetVideoData = async () => {
         const result = await db.select().from(VideoData).where(eq(VideoData.id, videoId));
-        console.log(result);
         setVideoData(result[0]);
     };
 
@@ -54,7 +56,7 @@ export const PlayerDialog = ({ playVideo, videoId }) => {
                             controls={true}
                             inputProps={{
                                 ...videoData,
-                                setDurationInFrame: (frameValue) => setDurationInFrame(frameValue)
+                                setDurationInFrame: (frameValue: any) => setDurationInFrame(frameValue)
                             }}
                         />
 

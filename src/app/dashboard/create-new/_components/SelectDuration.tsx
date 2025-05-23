@@ -10,13 +10,11 @@ interface Props {
 }
 
 export const SelectDuration = ({ onUserSelect }: Props) => {
-    const [selectOption,setSelectOption] = useState('');
     return (
         <div className={'mt-6'}>
             <h2 className={'font-semibold text-xl'}>Duration</h2>
             <p className={'text-gray-500 text-sm font-medium '}>Select the duration of the video</p>
             <Select onValueChange={(value) => {
-                setSelectOption(value)
                 onUserSelect('duration', value);
             }}>
                 <SelectTrigger className={'w-full mt-2 p-4 text-lg'}>

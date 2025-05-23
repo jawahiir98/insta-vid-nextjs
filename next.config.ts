@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   env: {
     DATABASE_URL: process.env.DATABASE_URL,
   },
+
 };
 
 export default nextConfig;

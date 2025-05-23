@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         // Create the reference where your data is store
         const storageRef = ref(storage, 'insta-vid/audio/' + id + '.mp3');
 
-        const request = {
+        const request: any = {
             input: { text: text },
             // Select the language and SSML voice gender (optional)
             voice: { languageCode: 'en-US', ssmlGender: 'FEMALE' },
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         const [response] = await client.synthesizeSpeech(request);
 
         // Create the buffer format for audio
-        const audioBuffer = Buffer.from(response.audioContent, 'binary');
+        const audioBuffer = Buffer.from(response.audioContent as any, 'binary');
 
         // Upload the data where you initialize the reference, in the format of buffer
         await uploadBytes(storageRef, audioBuffer, { contentType: 'audio/mp3' });

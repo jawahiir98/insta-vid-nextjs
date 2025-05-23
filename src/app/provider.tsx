@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 function Provider({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   useEffect(() => {
-    user && isNewUser();
+    if(user) isNewUser();
   }, [user]);
   const isNewUser = async () => {
     const result = await db
@@ -20,7 +20,7 @@ function Provider({ children }: { children: React.ReactNode }) {
       await db.insert(Users).values({
         name: user?.fullName,
         email: user?.primaryEmailAddress?.emailAddress,
-        image: user?.imageUrl,
+        imageUrl: user?.imageUrl,
       });
     }
   };

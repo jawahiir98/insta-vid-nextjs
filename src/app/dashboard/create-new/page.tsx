@@ -11,35 +11,42 @@ import { SelectDuration } from "@/app/dashboard/create-new/_components/SelectDur
 import { CustomLoading } from "@/app/dashboard/create-new/_components/CustomLoading"
 import {VideoDataContext} from "@/app/_context/videoDataContext";
 import { db } from "@/db/drizzle";
-import { VideoData } from "@/db/schema";
+import {Users, VideoData} from "@/db/schema";
 import {PlayerDialog} from "@/app/dashboard/_components/PlayerDialog";
+import {eq} from "drizzle-orm";
+import {toast} from "sonner";
 
 interface FormData {
     topic?: string
     imageStyle?: string
     duration?: string
 }
-interface Script{
-    imagePrompt: string;
-    contentText: string;
-}
-
 
 function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
-    const [audioFileUrl, setAudioFileUrl] = useState<string>('');
-    const [videoScript, setVideoScript] = useState<Script[]>();
-    const [captions, setCaptions] = useState([]);
-    const [images, setImages] = useState<string[]>([]);
     const [playVideo, setPlayVideo] = useState(true);
     const [videoId, setVideoId] = useState(2);
     const {user} = useUser();
+    const {userDetail, setUserDetail} = useContext(VideoDataContext);
     const { videoData, setVideoData } = useContext(VideoDataContext);
 
     const onHandleInputChange = (fieldName: string, fieldValue: string) => {
         setFormData(prev => ({ ...prev, [fieldName]: fieldValue }))
     }
+
+    const updateUserCredits = async () => {
+        const result = await db.update(Users).set({ credits: userDetail?.credits - 10 })
+            .where(eq(Users.email, user?.primaryEmailAddress?.emailAddress))
+            .returning({ id: Users.id });
+
+        console.log(result);
+        setUserDetail((prev:any): any => ({
+            ...prev,
+            'credits': userDetail?.credits - 10
+        }));
+        setVideoData(null);
+    };
 
     /*
     *   Generate custom prompt string using a template and the input values
@@ -49,6 +56,9 @@ function CreateNew() {
     }
 
     const onGenerateVideoCreation = async () => {
+        if(userDetail?.credits < 10){
+            toast.error('You do not have enough credits to create a video');
+        }
         await getVideoScript();
     }
 
@@ -61,11 +71,10 @@ function CreateNew() {
             prompt: generatePrompt(formData)
         })
         if(response.data.result){
-            setVideoData(prev => ({
+            setVideoData((prev:FormData) => ({
                 ...prev,
                 'videoScript': response.data.result
             }))
-            setVideoScript(response.data.result)
             await generateAudioFile(response.data.result)
         }
     }
@@ -84,11 +93,10 @@ function CreateNew() {
             id: id
         })
         if(response.data.result){
-            setVideoData(prev => ({
+            setVideoData((prev: FormData) => ({
                 ...prev,
                 'audioFileUrl': response.data.result
             }))
-            setAudioFileUrl(response.data.result); // Save the FILE URL
             await generateAudioCaptions(response.data.result, vidScript);
         }
     }
@@ -101,11 +109,10 @@ function CreateNew() {
             audioFileUrl: fileUrl,
         })
         if(response.data.result){
-            setVideoData(prev => ({
+            setVideoData((prev: FormData)=> ({
                 ...prev,
                 'captions': response.data.result
             }))
-            setCaptions(response.data.result); // Save the CAPTIONS
             await generateImage(vidScript);
         }
     }
@@ -127,7 +134,7 @@ function CreateNew() {
             }
         }
 
-        setVideoData(prev => ({
+        setVideoData((prev: FormData)=> ({
             ...prev,
             'imageList': imageList
         })); setLoading(false);
@@ -140,7 +147,7 @@ function CreateNew() {
         }
     }, [videoData]);
 
-    const saveVideoData = async (videoData) => {
+    const saveVideoData = async (videoData: any) => {
         setLoading(true);
         const result = await db.insert(VideoData).values({
             videoScript: videoData?.videoScript,
@@ -150,8 +157,8 @@ function CreateNew() {
             createdBy: user?.primaryEmailAddress?.emailAddress
         }).returning({id: VideoData?.id})
         setVideoId(result[0].id);
+        await updateUserCredits();
         setPlayVideo(true);
-        console.log(result);
         setLoading(false);
     }
 
@@ -159,15 +166,16 @@ function CreateNew() {
         <div className="md:px-20">
             <h2 className="font-bold text-3xl text-center">Create new video</h2>
             <div className="mt-10 rounded-xl shadow-md p-10">
-                <SelectTopic onUserSelect={onHandleInputChange} />
-                <SelectStyle onUserSelect={onHandleInputChange} />
-                <SelectDuration onUserSelect={onHandleInputChange} />
+                <SelectTopic onUserSelect={onHandleInputChange}/>
+                <SelectStyle onUserSelect={onHandleInputChange}/>
+                <SelectDuration onUserSelect={onHandleInputChange}/>
                 <Button
                     className="w-full mt-8"
                     onClick={onGenerateVideoCreation}
                 >
                     Create Short Video
                 </Button>
+                <h3 className='text-center text-yellow-800'>10 Credits Per Video</h3>
             </div>
             <CustomLoading loading={loading}/>
             <PlayerDialog playVideo={playVideo} videoId={videoId} />
