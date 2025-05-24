@@ -26,7 +26,7 @@ function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
     const [playVideo, setPlayVideo] = useState(true);
-    const [videoId, setVideoId] = useState();
+    const [videoId, setVideoId] = useState(null);
     const {user} = useUser();
     const {userDetail, setUserDetail} = useContext(VideoDataContext);
     const { videoData, setVideoData } = useContext(VideoDataContext);
@@ -156,7 +156,7 @@ function CreateNew() {
             imageList: videoData?.imageList,
             createdBy: user?.primaryEmailAddress?.emailAddress
         }).returning({id: VideoData?.id})
-        setVideoId(result[0].id);
+        setVideoId(result[0]?.id);
         await updateUserCredits();
         setPlayVideo(true);
         setLoading(false);
