@@ -26,7 +26,7 @@ function CreateNew() {
     const [formData, setFormData] = useState<FormData>({})
     const [loading, setLoading] = useState(false);
     const [playVideo, setPlayVideo] = useState(true);
-    const [videoId, setVideoId] = useState(2);
+    const [videoId, setVideoId] = useState();
     const {user} = useUser();
     const {userDetail, setUserDetail} = useContext(VideoDataContext);
     const { videoData, setVideoData } = useContext(VideoDataContext);
