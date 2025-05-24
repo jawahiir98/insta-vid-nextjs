@@ -41,6 +41,11 @@ export const PlayerDialog = ({ playVideo, videoId }: Props) => {
         setVideoData(result[0]);
     };
 
+    const onClosePlayer = () => {
+        setOpenDialog(false);
+        router.push('/dashboard');
+    }
+
     return (
         <Dialog open={openDialog}>
             <DialogContent className="flex flex-col justify-center items-center">
@@ -61,7 +66,7 @@ export const PlayerDialog = ({ playVideo, videoId }: Props) => {
                         />
 
                         <div className='flex items-center justify-around mt-8'>
-                            <Button variant="ghost" className="hover:scale-105 transition-all" onClick={()=> {router.replace('/dashboard'); setOpenDialog(!openDialog)}} >Cancel</Button>
+                            <Button variant="ghost" className="hover:scale-105 transition-all" onClick={onClosePlayer} >Cancel</Button>
                             <Button className=" hover:scale-105 hover:bg-gray-700 transition-all">Export</Button>
                         </div>
                     </DialogDescription>
